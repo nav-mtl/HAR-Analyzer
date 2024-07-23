@@ -64,20 +64,20 @@ The tool scans the HAR content for the following sensitive information:
 
 The tool scans for authorization headers that might contain sensitive tokens, such as:
 
-```Authorization Tokens
+#### Authorization Tokens
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 
-```API Keys
+#### API Keys
 x-api-key: abcdef123456
 
-```Cookies
+#### Cookies
 Set-Cookie: session_id=3e35a8
 
-```Credentials
+#### Credentials
 username: "user1"
 password: "Passw0rd!"
 
-```Session Ids
+#### Session Ids
 session_id: "3e35a8"
 
 ## Author
