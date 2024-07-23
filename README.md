@@ -24,8 +24,8 @@ The tool scans the HAR content for the following sensitive information:
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/har_analyzer.git
-    cd har_analyzer
+    git clone https://github.com/nav-mtl/HAR-Analyzer.git
+    cd HAR-Analyzer
     ```
 
 2. **Install the required packages**:
@@ -35,7 +35,7 @@ The tool scans the HAR content for the following sensitive information:
 
 3. **Run the application**:
     ```sh
-    python har_analyzer.py
+    python Analyzer.py
     ```
 
 4. **Open your browser and navigate to**:
