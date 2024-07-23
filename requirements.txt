@@ -1,0 +1,4 @@
+Flask==2.1.1
+haralyzer==2.0.4
+pandas==1.4.2
+plotly==5.8.0

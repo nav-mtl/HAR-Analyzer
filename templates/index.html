@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAR Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <center>
+        <p>Written by <a href="https://www.linkedin.com/in/njot/" target="_blank">Navjot Singh</a></p>
+        </center>
+        <h1 class="mt-5">HAR File Analyzer</h1>
+        <form method="POST" action="/" enctype="multipart/form-data">
+            <!-- File upload for HAR file -->
+            <div class="form-group">
+                <label for="har_file">Upload HAR File</label>
+                <input type="file" class="form-control" id="har_file" name="har_file">
+            </div>
+            <!-- Textarea for pasting HAR content -->
+            <div class="form-group">
+                <label for="har_text">Or Paste HAR Content</label>
+                <textarea class="form-control" id="har_text" name="har_text" rows="10"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze</button>
+        </form>
+        <a href="/compare" target="_blank" class="btn btn-secondary mt-3">Compare HAR Files</a>
+        {% if error %}
+        <!-- Display error message if any -->
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+        {% if metrics %}
+        <!-- Display metrics if available -->
+        <h2 class="mt-5">Metrics:</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Total Entries: {{ metrics.total_entries }}</li>
+            <li class="list-group-item">Total Time: {{ metrics.total_time }} ms</li>
+            <li class="list-group-item">Average Time: {{ metrics.average_time }} ms</li>
+            <li class="list-group-item">
+                Status Codes:
+                <ul>
+                    {% for status, count in metrics.status_codes.items() %}
+                    <li>{{ status }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <!-- Display security issues if any -->
+        <h2 class="mt-5">Security Issues:</h2>
+        <ul class="list-group">
+            {% for issue in security_issues %}
+            <li class="list-group-item">
+                <strong>{{ issue.type }}:</strong> {{ issue.url }}
+                <pre>{{ issue.content }}</pre>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Display timing plot -->
+        <h2 class="mt-5">Timing Plot:</h2>
+        <div>{{ timing_plot | safe }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare HAR Files</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="container">
+        <center>
+        <p>Written by <a href="https://www.linkedin.com/in/njot/" target="_blank">Navjot Singh</a></p>
+        </center>
+        <h1 class="mt-5">Compare HAR Files</h1>
+        <form method="POST" action="/compare" enctype="multipart/form-data">
+            <!-- File upload for HAR file 1 -->
+            <div class="form-group">
+                <label for="har1_file">Upload HAR File 1</label>
+                <input type="file" class="form-control" id="har1_file" name="har1_file">
+            </div>
+            <!-- File upload for HAR file 2 -->
+            <div class="form-group">
+                <label for="har2_file">Upload HAR File 2</label>
+                <input type="file" class="form-control" id="har2_file" name="har2_file">
+            </div>
+            <!-- Textarea for pasting HAR content 1 -->
+            <div class="form-group">
+                <label for="har1_text">Or Paste HAR Content 1</label>
+                <textarea class="form-control" id="har1_text" name="har1_text" rows="10"></textarea>
+            </div>
+            <!-- Textarea for pasting HAR content 2 -->
+            <div class="form-group">
+                <label for="har2_text">Or Paste HAR Content 2</label>
+                <textarea class="form-control" id="har2_text" name="har2_text" rows="10"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Compare</button>
+        </form>
+        {% if error %}
+        <!-- Display error message if any -->
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+        {% if comparison_results %}
+        <!-- Display metrics for HAR file 1 -->
+        <h2 class="mt-5">Metrics for HAR File 1:</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Total Entries: {{ comparison_results.metrics1.total_entries }}</li>
+            <li class="list-group-item">Total Time: {{ comparison_results.metrics1.total_time }} ms</li>
+            <li class="list-group-item">Average Time: {{ comparison_results.metrics1.average_time }} ms</li>
+            <li class="list-group-item">
+                Status Codes:
+                <ul>
+                    {% for status, count in comparison_results.metrics1.status_codes.items() %}
+                    <li>{{ status }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <!-- Display metrics for HAR file 2 -->
+        <h2 class="mt-5">Metrics for HAR File 2:</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Total Entries: {{ comparison_results.metrics2.total_entries }}</li>
+            <li class="list-group-item">Total Time: {{ comparison_results.metrics2.total_time }} ms</li>
+            <li class="list-group-item">Average Time: {{ comparison_results.metrics2.average_time }} ms</li>
+            <li class="list-group-item">
+                Status Codes:
+                <ul>
+                    {% for status, count in comparison_results.metrics2.status_codes.items() %}
+                    <li>{{ status }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <!-- Display comparison metrics -->
+        <h2 class="mt-5">Comparison Metrics:</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Difference in Total Entries: {{ comparison_results.comparison.total_entries_diff }}</li>
+            <li class="list-group-item">Difference in Total Time: {{ comparison_results.comparison.total_time_diff }} ms</li>
+            <li class="list-group-item">Difference in Average Time: {{ comparison_results.comparison.average_time_diff }} ms</li>
+            <li class="list-group-item">
+                Difference in Status Codes:
+                <ul>
+                    {% for status, diff in comparison_results.comparison.status_codes_diff.items() %}
+                    <li>{{ status }}: {{ diff }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <!-- Display security issues for HAR file 1 -->
+        <h2 class="mt-5">Security Issues in HAR File 1:</h2>
+        <ul class="list-group">
+            {% for issue in comparison_results.security_issues1 %}
+            <li class="list-group-item">
+                <strong>{{ issue.type }}:</strong> {{ issue.url }}
+                <pre>{{ issue.content }}</pre>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Display security issues for HAR file 2 -->
+        <h2 class="mt-5">Security Issues in HAR File 2:</h2>
+        <ul class="list-group">
+            {% for issue in comparison_results.security_issues2 %}
+            <li class="list-group-item">
+                <strong>{{ issue.type }}:</strong> {{ issue.url }}
+                <pre>{{ issue.content }}</pre>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Display timing plots for both HAR files -->
+        <h2 class="mt-5">Timing Plot for HAR File 1:</h2>
+        <div>{{ comparison_results.timing_plot1 | safe }}</div>
+        <h2 class="mt-5">Timing Plot for HAR File 2:</h2>
+        <div>{{ comparison_results.timing_plot2 | safe }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
